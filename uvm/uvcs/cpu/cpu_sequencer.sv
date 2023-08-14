@@ -1,0 +1,1 @@
+typedef uvm_sequencer #(cpu_instruction) cpu_sequencer;
