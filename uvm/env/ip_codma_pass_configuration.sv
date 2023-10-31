@@ -51,12 +51,11 @@ class short_transaction_pass_configuration extends ip_codma_pass_configuration;
    function new (string name="short_transaction_pass_configuration");
       super.new(name);
    endfunction
-
+   
    constraint short_transaction_length {len_bytes <= 64 ; }
    constraint full_transaction_t0 { task_type == 0 -> len_bytes % 8 == 0 ;}
    constraint full_transaction_t2 { task_type == 1 -> len_bytes % 32 == 0 ;}
    constraint no_linking_task  { task_type != 2;}
-
 
 endclass
 

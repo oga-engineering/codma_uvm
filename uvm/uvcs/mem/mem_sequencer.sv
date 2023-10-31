@@ -6,4 +6,4 @@
 //   endfunction
 //
 //endclass
-typedef uvm_sequencer #(mem_block) mem_sequencer;
+typedef uvm_sequencer #(mem_transaction) mem_sequencer;

@@ -4,7 +4,7 @@ class mem_agent extends uvm_agent;
 
    `uvm_component_utils(mem_agent)
 
-   uvm_analysis_port #(mem_block) a_port;
+   uvm_analysis_port #(mem_transaction) a_port;
 
    virtual mem_interface mem_vif;
    virtual cpu_interface cpu_vif;

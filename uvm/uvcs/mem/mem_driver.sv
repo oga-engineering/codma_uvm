@@ -1,7 +1,11 @@
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // This is used to create a memory array instead of using a register model
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-class mem_driver extends uvm_driver#(mem_block);
+/*
+To Do: This needs to change. The values from the DUT need to be written to a reg model for verification
+Alternatively, using assertions to make sure the writes from the DUT are the same as the DATA that was read by the DUT on the read cycle
+*/
+class mem_driver extends uvm_driver#(mem_transaction);
 
    `uvm_component_utils(mem_driver)
 
@@ -13,54 +17,51 @@ class mem_driver extends uvm_driver#(mem_block);
    virtual cpu_interface.master cpu_vif;
 
    rand bit addr;
+   // should be made into a parameter defined mem size
    bit [263:0][7:0][7:0] mem_array;
    bit [63:0]            task_info_p1;
    bit [63:0]            task_info_p2;
    
    // Grab the task data to feed it into the mem array
    task run_phase (uvm_phase phase);
-      mem_block mb;
+      mem_transaction mb;
       #4;
-      forever begin
-         `uvm_info(get_type_name,"Mem Sequence next item",UVM_LOW)
-         seq_item_port.get_next_item(mb);
-         turn_to_mem(mb,mem_array);
+      `uvm_info(get_type_name,"Mem Sequence next item",UVM_LOW)
+      seq_item_port.get_next_item(mb);
+      turn_to_mem(mb,mem_array);    
 
-         mem_vif.grant = 0;
+      mem_vif.grant = 0;      
 
-         // Process read and write requests
-         while (!cpu_vif.irq) begin
-            fork
-               wait(mem_vif.read) begin
-                  `uvm_info(get_type_name(),$sformatf("READ REQ %d",mem_vif.read),UVM_LOW)
-                  do_read(mem_array, mb);               
-                  `uvm_info(get_type_name(),$sformatf("READ DONE %d",mem_vif.read),UVM_LOW)
-               end
-            begin
-               wait(mem_vif.write && !mem_vif.read_valid) begin
-                  // The design does not expect parallel rd/wr operations
-                  `uvm_info(get_type_name(),$sformatf("WRITE REQ %d",mem_vif.write),UVM_LOW)
-                  do_write(mem_array, mb);
-                  `uvm_info(get_type_name(),$sformatf("WRITE DONE %d",mem_vif.write),UVM_LOW)
-               end
+      // Process read and write requests
+      while (!cpu_vif.irq) begin
+         fork
+            wait(mem_vif.read) begin
+               `uvm_info(get_type_name(),$sformatf("READ REQ %d",mem_vif.read),UVM_LOW)
+               do_read(mem_array, mb);               
+               `uvm_info(get_type_name(),$sformatf("READ DONE %d",mem_vif.read),UVM_LOW)
             end
-            join
+         begin
+            wait(mem_vif.write && !mem_vif.read_valid) begin
+               // The design does not expect parallel rd/wr operations
+               `uvm_info(get_type_name(),$sformatf("WRITE REQ %d",mem_vif.write),UVM_LOW)
+               do_write(mem_array, mb);
+               `uvm_info(get_type_name(),$sformatf("WRITE DONE %d",mem_vif.write),UVM_LOW)
+            end
          end
+         join
+      end
 
-         // Move to the next sequence item once the interrupt is asserted
-         //wait(cpu_vif.irq);
-         seq_item_port.item_done(mb);
-         for (int i = 0 ; i<264 ; i++) begin
-            `uvm_info(get_type_name(),$sformatf("FINAL mem_array[%d] %h",i,mem_array[i]),UVM_DEBUG)
-         end
+      for (int i = 0 ; i<264 ; i++) begin
+         `uvm_info(get_type_name(),$sformatf("FINAL mem_array[%d] %h",i,mem_array[i]),UVM_DEBUG)
       end
       
+      seq_item_port.item_done(mb);
    endtask
 
    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    // This function stores task data at the task pointer address (VERIFIED)
    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   task turn_to_mem(mem_block mb, output bit [263:0][7:0][7:0] mem_array);
+   task turn_to_mem(mem_transaction mb, output bit [263:0][7:0][7:0] mem_array);
       `uvm_info(get_type_name(),$sformatf("Turning Sequence Item into Mem Array:\nsrc: %d, dst:%d len:%d task_addr:%d stat_addr:%d type:%d",mb.src_addr, mb.dst_addr, mb.len_bytes, mb.task_addr, mb.stat_addr, mb.task_type),UVM_LOW)
       task_info_p1 = {mb.src_addr,mb.task_type};
       task_info_p2 = {mb.len_bytes,mb.dst_addr};
@@ -77,7 +78,7 @@ class mem_driver extends uvm_driver#(mem_block);
    // TODO: DEFINE MEM ARRAY ACCESS R/W PROTOCOLS THROUGH IF
    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-   task do_read(bit [263:0][7:0][7:0] mem_array, mem_block mb);
+   task do_read(bit [263:0][7:0][7:0] mem_array, mem_transaction mb);
       if(mem_vif.addr == mb.task_addr)
          `uvm_info(get_type_name(),$sformatf("Performing Task Read at %d",mem_vif.addr),UVM_LOW)
       else if(mem_vif.addr == mb.src_addr)
@@ -133,7 +134,7 @@ class mem_driver extends uvm_driver#(mem_block);
       #4;      
    endtask
 
-   task do_write(bit [263:0][7:0][7:0] mem_array, mem_block mb);
+   task do_write(bit [263:0][7:0][7:0] mem_array, mem_transaction mb);
       if(mem_vif.addr == mb.stat_addr)
          `uvm_info(get_type_name(),$sformatf("Doing Status write (%d) at %d",mem_vif.write, mem_vif.addr),UVM_LOW)
       #4;

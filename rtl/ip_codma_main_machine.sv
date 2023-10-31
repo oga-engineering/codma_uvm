@@ -214,13 +214,13 @@ import ip_codma_pkg::*;
                 irq_o       <= 'd0;
                 
                 //update the pointer (perhaps add an extra state or do this in writing state ?)
-                if (dma_state_r == DMA_CRC || dma_state_r == DMA_WRITING) begin
+                /* if (dma_state_r == DMA_CRC || dma_state_r == DMA_WRITING) begin
                     need_write_i    <= 'd1;
                     write_data      <= 'h0;
                     reg_size_wr     <= 'd3;
                     reg_addr_wr     <= status_pointer_i;
                 // Deassert busy and interrupt when done
-                end else if (/*wr_state_next_s == WR_IDLE && */ busy_o) begin
+                end else */ if (/*wr_state_next_s == WR_IDLE && */ busy_o) begin
                     irq_o   <= 'd1;
                     busy_o  <= 'd0;
                 end

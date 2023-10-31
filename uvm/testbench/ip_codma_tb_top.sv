@@ -48,6 +48,7 @@ module ip_codma_tb_top;
    end
    //
 
+   // should setup a clock uvc for better timing control
    always #2 clock = ~clock;
 
 

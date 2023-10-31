@@ -14,6 +14,7 @@ package ip_codma_env_pkg;
   `include "../env/ip_codma_mc_sequencer.sv"
   `include "../env/ip_codma_test_env.sv"
   `include "../env/ip_codma_mc_sequences.sv"
-  `include "ip_codma_testlib.sv"
+  `include "../env/ip_codma_scoreboard.sv"
+  `include "../testbench/ip_codma_testlib.sv"
 
 endpackage

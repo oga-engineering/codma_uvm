@@ -6,6 +6,7 @@ class test_env extends uvm_env;
    cpu_agent            m_cpu_agent;
    mem_agent            m_mem_agent;
    ip_codma_vsequencer  m_vsequencer;
+   //ip_codma_scoreboard  m_scoreboard;
    
    function new(string name, uvm_component parent);
       super.new(name,parent);
@@ -19,7 +20,7 @@ class test_env extends uvm_env;
       m_cpu_agent       = cpu_agent          ::type_id::create("m_cpu_agent" ,this);
       m_mem_agent       = mem_agent          ::type_id::create("m_mem_agent" ,this);
       m_vsequencer      = ip_codma_vsequencer::type_id::create("m_vsequencer",this);
-
+      //m_scoreboard      = ip_codma_scoreboard::type_id::create("m_scoreboard",this);
    endfunction
 
    // The virtual sequencer is connected to the UVC sequencers in the environment

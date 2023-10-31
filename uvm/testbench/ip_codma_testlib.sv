@@ -4,7 +4,8 @@ class ip_codma_generic_test extends uvm_test;
 
    `uvm_component_utils(ip_codma_generic_test)
 
-   test_env m_env;
+   test_env             m_env;
+   ip_codma_scoreboard  m_sb;
 
    function new(string name, uvm_component parent);
       super.new(name, parent);
@@ -12,7 +13,8 @@ class ip_codma_generic_test extends uvm_test;
 
    virtual function void build_phase (uvm_phase phase);
       super.build_phase(phase);
-      m_env = test_env::type_id::create("m_env",this);
+      m_env = test_env           ::type_id::create("m_env",this);
+      m_sb  = ip_codma_scoreboard::type_id::create("m_sb" ,this);
    endfunction
 
    // Print the hierarchy of the TB
@@ -24,7 +26,6 @@ class ip_codma_generic_test extends uvm_test;
 
    virtual task run_phase(uvm_phase phase);
       phase.raise_objection(this);
-
       begin
          //generic_sequence m_seq;
          virtual_sequences v_seq;
@@ -42,8 +43,8 @@ class ip_codma_generic_test extends uvm_test;
          `uvm_info(get_type_name(),"Starting the sequencer(s)",UVM_LOW)
          v_seq.start(m_env.m_vsequencer);
       end
-
       phase.drop_objection(this);
+      `uvm_info(get_type_name(),"Test Done",UVM_LOW)
    endtask   
 
 endclass

@@ -1,4 +1,4 @@
-class generic_sequence extends uvm_sequence#(mem_block);
+class generic_sequence extends uvm_sequence#(mem_transaction);
 
    `uvm_object_utils(generic_sequence)
 
@@ -7,7 +7,7 @@ class generic_sequence extends uvm_sequence#(mem_block);
    endfunction
 
    rand bit [31:0] i_dst_addr, i_src_addr, i_task_addr, i_len_bytes, i_task_type, i_stat_addr;
-   mem_block mb;
+   mem_transaction mb;
    
    // End of simulation objection
   task pre_start;
