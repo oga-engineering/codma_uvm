@@ -1,3 +1,4 @@
+// The test environment connects the VC agents to the multi-channel sequencer
 class test_env extends uvm_env;
 
    `uvm_component_utils(test_env)

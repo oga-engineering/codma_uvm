@@ -1,3 +1,4 @@
+// Class used to define the configuration settings the DUT is epected to pass.
 `ifndef __IP_CODMA_PASS_CONFIGURATION_LIB__
 `define __IP_CODMA_PASS_CONFIGURATION_LIB__
 

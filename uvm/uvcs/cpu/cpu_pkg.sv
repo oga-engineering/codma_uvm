@@ -1,3 +1,5 @@
+// Package to be added to the test environment to include the CPU VC.
+
 package cpu_pkg;
 
    `include "uvm_macros.svh"

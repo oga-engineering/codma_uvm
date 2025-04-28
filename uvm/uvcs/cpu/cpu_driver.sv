@@ -1,3 +1,6 @@
+// This is the driver class for the CPU Verification Component
+// The driver takes items from the sequences and replicates the procedures, thus driving the CPU interface bus
+
 class cpu_driver extends uvm_driver#(cpu_instruction);
 
    `uvm_component_utils(cpu_driver)

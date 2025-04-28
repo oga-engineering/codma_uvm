@@ -1,3 +1,5 @@
+// Component to be worked.
+
 class cpu_instruction extends uvm_sequence_item;
 
    function new(string name="cpu_instruction");

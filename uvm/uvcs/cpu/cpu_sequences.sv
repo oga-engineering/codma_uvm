@@ -1,5 +1,7 @@
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // CPU SEQUENCE CLASS
+// --
+// The CPU VC sequencer is used to define an order of packets to send to the CPU driver.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 class cpu_simple_sequence extends uvm_sequence#(cpu_instruction);
    `uvm_object_utils(cpu_simple_sequence)

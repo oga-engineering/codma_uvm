@@ -1,4 +1,4 @@
-
+// The testbench file is used to connect the interfaces from the VCs to the DUT
 module ip_codma_tb_top;
 
 
