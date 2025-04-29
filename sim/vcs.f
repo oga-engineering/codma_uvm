@@ -4,7 +4,7 @@
 +incdir+${UVM_HOME}/src
 ${UVM_HOME}/src/uvm.sv
 
-../env/ip_codma_interfaces.sv
+../rtl/ip_codma_interfaces.sv
 ../uvcs/cpu/cpu_pkg.sv	
 ../uvcs/mem/mem_pkg.sv					
 ../../rtl/ip_codma_pkg.sv					
